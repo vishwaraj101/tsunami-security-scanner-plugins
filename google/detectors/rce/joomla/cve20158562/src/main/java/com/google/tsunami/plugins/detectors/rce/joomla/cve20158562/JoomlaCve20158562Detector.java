@@ -19,6 +19,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.tsunami.common.net.http.HttpClient.TSUNAMI_USER_AGENT;
 import static com.google.tsunami.common.net.http.HttpRequest.get;
+import io.github.pixee.security.BoundedLineReader;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 import com.google.common.base.Splitter;
@@ -144,7 +145,7 @@ public final class JoomlaCve20158562Detector implements VulnDetector {
       out.write(httpRequest);
       // Block until we receive a successful response.
       BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream(), UTF_8));
-      String httpResponse = in.readLine();
+      String httpResponse = BoundedLineReader.readLine(in, 5_000_000);
       if (!httpResponse.contains("200 OK")) {
         logger.atInfo().log("Sending object injection payload failed");
         return false;

@@ -17,6 +17,7 @@ package com.google.tsunami.plugins.detectors.credentials.genericweakcredentialde
 
 import static com.google.tsunami.common.data.NetworkEndpointUtils.forHostnameAndPort;
 import static com.google.tsunami.common.data.NetworkEndpointUtils.forIpAndPort;
+import io.github.pixee.security.BoundedLineReader;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 import com.google.common.collect.ImmutableList;
@@ -67,7 +68,7 @@ public class NormalParser {
     ImmutableList.Builder<DiscoveredCredential> credentialBuilder = ImmutableList.builder();
 
     String line;
-    while ((line = reader.readLine()) != null) {
+    while ((line = BoundedLineReader.readLine(reader, 5_000_000)) != null) {
       Matcher matcher = CREDENTIAL_LINE_PATTERN.matcher(line);
       if (matcher.find()) {
         String ip = matcher.group("ip");
