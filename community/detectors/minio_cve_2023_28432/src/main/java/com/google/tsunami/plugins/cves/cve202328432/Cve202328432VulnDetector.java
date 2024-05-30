@@ -52,6 +52,8 @@ import com.google.tsunami.proto.TargetInfo;
 import com.google.tsunami.proto.TextData;
 import com.google.tsunami.proto.Vulnerability;
 import com.google.tsunami.proto.VulnerabilityId;
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.net.URL;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -258,7 +260,7 @@ public final class Cve202328432VulnDetector implements VulnDetector {
       signedRequest.setUrl(targetUri);
 
       HttpHeaders.Builder signedRequestHeaders = HttpHeaders.builder();
-      signedRequestHeaders.addHeader("Host", new URL(targetUri).getAuthority());
+      signedRequestHeaders.addHeader("Host", Urls.create(targetUri, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS).getAuthority());
 
       // SHA 256 value of an empty body.
       signedRequestHeaders.addHeader(USER_AGENT, TSUNAMI_USER_AGENT);
